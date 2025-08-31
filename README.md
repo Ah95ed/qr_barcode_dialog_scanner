@@ -1,4 +1,5 @@
-# Crystal QR Barcode Dialog
+# qr_barcode_dialog_scanner
+
 
 A modern and elegant Flutter package for QR Code and Barcode scanning with stunning dialog interface and premium user experience.
 version 1.0.0
@@ -459,9 +460,7 @@ class BatchScanner {
 | Data Matrix | 2D matrix | Small item marking |
 | Aztec | 2D matrix | Transport tickets |
 
-## 🐛 Troubleshooting
 
-### Common Issues and Solutions
 
 #### Camera Permission Denied
 ```dart
@@ -527,7 +526,7 @@ void startScanning() async {
 #### Invalid Barcode Handling
 ```dart
 void scanWithValidation() async {
-  final result = await CrystalQRBarcodeDialog.showScannerDialog(
+  final result = await QRBarcodeScanner.showScannerDialog(
     context,
     onCodeScanned: (code) {
       // Real-time validation
@@ -570,14 +569,11 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support
 
-
-- 💡 **Feature Requests**: [GitHub Discussions](https://github.com/yourusername//discussions)
 - 📧 **Email Support**: amhmeed31@gmail.com
-- 📖 **Documentation**: [API Reference](https://pub.dev/documentation/qr_barcode_dialog_scanner)
-
-
-
+- 🐙 **GitHub Issues**: Open an issue if you encounter a bug or have a feature request
 
 ---
+## 📄 License
+MIT © 2025 Ahmed Shaker
 
 Made with ❤️ for the Flutter community

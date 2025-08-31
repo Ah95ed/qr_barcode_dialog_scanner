@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:qr_barcode_dialog_scanner/qr_barcode_dialog_scanner.dart';
+import 'package:qr_barcode_dialog_scanner/src/scanner_result.dart';
 
 class QRBarcodeScanner {
-  
-  /// Show scanner dialog with custom design
+  /// يفتح دايلوك مسح QR/Barcode جاهز من المكتبة ويعيد النتيجة عند النجاح.
+  ///
+  /// Opens the built-in QR/Barcode scanning dialog and returns the result
+  /// when a code is detected.
   static Future<ScannerResult?> showScannerDialog(
     BuildContext context, {
     String? title,
@@ -31,13 +34,15 @@ class QRBarcodeScanner {
     );
   }
 
-  /// Request camera permission
+  /// يطلب سماحية الكاميرا من المستخدم ويعيد true إذا تمت الموافقة.
+  /// Requests camera permission from the user and returns true if granted.
   static Future<bool> requestCameraPermission() async {
     final status = await Permission.camera.request();
     return status == PermissionStatus.granted;
   }
 
-  /// Check if camera permission is granted
+  /// يتحقق إذا سماحية الكاميرا ممنوحة مسبقاً.
+  /// Checks whether the camera permission is already granted.
   static Future<bool> isCameraPermissionGranted() async {
     final status = await Permission.camera.status;
     return status == PermissionStatus.granted;

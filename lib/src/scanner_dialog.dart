@@ -1,27 +1,39 @@
-
-
-
-
-
-
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:qr_barcode_dialog_scanner/qr_barcode_dialog_scanner.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'scanner_result.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 
 class ScannerDialog extends StatefulWidget {
+  /// عنوان الدايلوك
+  /// Dialog title
   final String title;
+
+  /// نص توضيحي تحت العنوان
+  /// Subtitle text under the title
   final String subtitle;
+
+  /// اللون الأساسي لعناصر التحكم والمؤثرات
+  /// Primary color for accents and controls
   final Color primaryColor;
+
+  /// لون الخلفية
+  /// Background color
   final Color backgroundColor;
+
+  /// هل تسمح بزر تشغيل/إيقاف الفلاش
+  /// Whether to show torch toggle button
   final bool allowFlashToggle;
+
+  /// هل تسمح بتبديل الكاميرا (أمامية/خلفية)
+  /// Whether to show camera switch button
   final bool allowCameraToggle;
+
+  /// وقت أقصى تلقائي لإغلاق الدايلوك
+  /// Optional timeout to auto-close the dialog
   final Duration? timeout;
 
   const ScannerDialog({
-    Key? key,
+    super.key,
     required this.title,
     required this.subtitle,
     required this.primaryColor,
@@ -29,7 +41,7 @@ class ScannerDialog extends StatefulWidget {
     this.allowFlashToggle = true,
     this.allowCameraToggle = true,
     this.timeout,
-  }) : super(key: key);
+  });
 
   @override
   State<ScannerDialog> createState() => _ScannerDialogState();
@@ -37,12 +49,11 @@ class ScannerDialog extends StatefulWidget {
 
 class _ScannerDialogState extends State<ScannerDialog>
     with TickerProviderStateMixin {
-  QRViewController? controller;
-  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
+  MobileScannerController? controller;
   bool isFlashOn = false;
   bool isFrontCamera = false;
   bool isScanning = true;
-  
+
   late AnimationController _animationController;
   late AnimationController _pulseController;
   late Animation<double> _scanAnimation;
@@ -51,6 +62,7 @@ class _ScannerDialogState extends State<ScannerDialog>
   @override
   void initState() {
     super.initState();
+    controller = MobileScannerController(autoStart: true);
     _setupAnimations();
     _startTimeout();
   }
@@ -60,27 +72,19 @@ class _ScannerDialogState extends State<ScannerDialog>
       duration: const Duration(seconds: 2),
       vsync: this,
     );
-    
+
     _pulseController = AnimationController(
       duration: const Duration(milliseconds: 1500),
       vsync: this,
     );
 
-    _scanAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeInOut,
-    ));
+    _scanAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
 
-    _pulseAnimation = Tween<double>(
-      begin: 1.0,
-      end: 1.3,
-    ).animate(CurvedAnimation(
-      parent: _pulseController,
-      curve: Curves.elasticOut,
-    ));
+    _pulseAnimation = Tween<double>(begin: 1.0, end: 1.3).animate(
+      CurvedAnimation(parent: _pulseController, curve: Curves.elasticOut),
+    );
 
     _animationController.repeat();
     _pulseController.repeat(reverse: true);
@@ -106,15 +110,12 @@ class _ScannerDialogState extends State<ScannerDialog>
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [
-              widget.backgroundColor,
-              widget.backgroundColor.withOpacity(0.9),
-            ],
+            colors: [widget.backgroundColor, widget.backgroundColor],
           ),
           borderRadius: BorderRadius.circular(24),
           boxShadow: [
             BoxShadow(
-              color: widget.primaryColor.withOpacity(0.3),
+              color: widget.primaryColor,
               blurRadius: 20,
               spreadRadius: 5,
             ),
@@ -156,10 +157,7 @@ class _ScannerDialogState extends State<ScannerDialog>
                     const SizedBox(height: 4),
                     Text(
                       widget.subtitle,
-                      style: TextStyle(
-                        color: Colors.white.withOpacity(0.7),
-                        fontSize: 14,
-                      ),
+                      style: TextStyle(color: Colors.white, fontSize: 14),
                     ),
                   ],
                 ),
@@ -180,20 +178,15 @@ class _ScannerDialogState extends State<ScannerDialog>
           scale: _pulseAnimation.value,
           child: Container(
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.1),
+              color: Colors.white,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: Colors.white.withOpacity(0.2),
-                width: 1,
-              ),
+              border: Border.all(color: Colors.white, width: 1),
             ),
             child: IconButton(
-              onPressed: () => Navigator.of(context).pop(),
-              icon: const Icon(
-                Icons.close,
-                color: Colors.white,
-                size: 24,
-              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              icon: const Icon(Icons.close, color: Colors.black, size: 24),
             ),
           ),
         );
@@ -202,8 +195,11 @@ class _ScannerDialogState extends State<ScannerDialog>
   }
 
   Widget _buildScannerArea() {
+    final height = MediaQuery.sizeOf(context).height;
+
+    final width = MediaQuery.sizeOf(context).width;
     return Container(
-      height: 300,
+      height: height * 0.3,
       margin: const EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
@@ -216,16 +212,14 @@ class _ScannerDialogState extends State<ScannerDialog>
         borderRadius: BorderRadius.circular(14),
         child: Stack(
           children: [
-            QRView(
-              key: qrKey,
-              onQRViewCreated: _onQRViewCreated,
-              overlay: QrScannerOverlayShape(
-                borderColor: widget.primaryColor,
-                borderRadius: 16,
-                borderLength: 30,
-                borderWidth: 4,
-                cutOutSize: 250,
-              ),
+            MobileScanner(
+              controller: controller!,
+              fit: BoxFit.cover,
+              onDetect: (BarcodeCapture capture) {
+                if (mounted && isScanning) {
+                  _onCodeScanned(capture);
+                }
+              },
             ),
             _buildScanningAnimation(),
             _buildCornerDecorations(),
@@ -272,36 +266,16 @@ class _ScannerDialogState extends State<ScannerDialog>
     return Stack(
       children: [
         // Top-left corner
-        Positioned(
-          top: 40,
-          left: 40,
-          child: _buildCorner(
-            topLeft: true,
-          ),
-        ),
+        Positioned(top: 40, left: 40, child: _buildCorner(topLeft: true)),
         // Top-right corner
-        Positioned(
-          top: 40,
-          right: 40,
-          child: _buildCorner(
-            topRight: true,
-          ),
-        ),
+        Positioned(top: 40, right: 40, child: _buildCorner(topRight: true)),
         // Bottom-left corner
-        Positioned(
-          bottom: 40,
-          left: 40,
-          child: _buildCorner(
-            bottomLeft: true,
-          ),
-        ),
+        Positioned(bottom: 40, left: 40, child: _buildCorner(bottomLeft: true)),
         // Bottom-right corner
         Positioned(
           bottom: 40,
           right: 40,
-          child: _buildCorner(
-            bottomRight: true,
-          ),
+          child: _buildCorner(bottomRight: true),
         ),
       ],
     );
@@ -408,11 +382,7 @@ class _ScannerDialogState extends State<ScannerDialog>
           ),
           child: IconButton(
             onPressed: onPressed,
-            icon: Icon(
-              icon,
-              color: Colors.white,
-              size: 28,
-            ),
+            icon: Icon(icon, color: Colors.white, size: 28),
             padding: const EdgeInsets.all(12),
           ),
         ),
@@ -420,7 +390,7 @@ class _ScannerDialogState extends State<ScannerDialog>
         Text(
           label,
           style: TextStyle(
-            color: Colors.white.withOpacity(0.8),
+            color: Colors.white,
             fontSize: 12,
             fontWeight: FontWeight.w500,
           ),
@@ -442,14 +412,10 @@ class _ScannerDialogState extends State<ScannerDialog>
               child: Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: isScanning
-                      ? widget.primaryColor.withOpacity(0.2)
-                      : Colors.grey.withOpacity(0.2),
+                  color: isScanning ? widget.primaryColor : Colors.grey,
                   borderRadius: BorderRadius.circular(50),
                   border: Border.all(
-                    color: isScanning
-                        ? widget.primaryColor
-                        : Colors.grey,
+                    color: isScanning ? widget.primaryColor : Colors.grey,
                     width: 3,
                   ),
                 ),
@@ -466,7 +432,7 @@ class _ScannerDialogState extends State<ScannerDialog>
         Text(
           isScanning ? 'جاري المسح...' : 'متوقف',
           style: TextStyle(
-            color: Colors.white.withOpacity(0.8),
+            color: Colors.white,
             fontSize: 12,
             fontWeight: FontWeight.w500,
           ),
@@ -480,19 +446,12 @@ class _ScannerDialogState extends State<ScannerDialog>
       padding: const EdgeInsets.all(20),
       child: Row(
         children: [
-          Icon(
-            Icons.info_outline,
-            color: Colors.white.withOpacity(0.6),
-            size: 16,
-          ),
+          Icon(Icons.info_outline, color: Colors.white, size: 16),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
               'يدعم QR Code, EAN-13, Code 128, و أكثر',
-              style: TextStyle(
-                color: Colors.white.withOpacity(0.6),
-                fontSize: 12,
-              ),
+              style: TextStyle(color: Colors.white, fontSize: 12),
             ),
           ),
         ],
@@ -500,19 +459,7 @@ class _ScannerDialogState extends State<ScannerDialog>
     );
   }
 
-  void _onQRViewCreated(QRViewController controller) {
-    setState(() {
-      this.controller = controller;
-    });
-
-    controller.scannedDataStream.listen((scanData) {
-      if (mounted && isScanning) {
-        _onCodeScanned(scanData);
-      }
-    });
-  }
-
-  void _onCodeScanned(Barcode scanData) {
+  void _onCodeScanned(BarcodeCapture capture) {
     setState(() {
       isScanning = false;
     });
@@ -520,9 +467,13 @@ class _ScannerDialogState extends State<ScannerDialog>
     // Haptic feedback
     HapticFeedback.mediumImpact();
 
+    final first = capture.barcodes.isNotEmpty ? capture.barcodes.first : null;
+    final code = first?.rawValue ?? '';
+    final format = first?.format ?? BarcodeFormat.unknown;
+
     final result = ScannerResult(
-      code: scanData.code ?? '',
-      format: scanData.format,
+      code: code,
+      format: format,
       timestamp: DateTime.now(),
     );
 
@@ -530,21 +481,22 @@ class _ScannerDialogState extends State<ScannerDialog>
   }
 
   void _toggleFlash() async {
-    if (controller != null) {
-      await controller!.toggleFlash();
-      setState(() {
-        isFlashOn = !isFlashOn;
-      });
-    }
+    final c = controller;
+    if (c == null) return;
+    await c.toggleTorch();
+    setState(() {
+      isFlashOn = c.value.torchState == TorchState.on;
+    });
   }
 
   void _toggleCamera() async {
-    if (controller != null) {
-      await controller!.flipCamera();
-      setState(() {
-        isFrontCamera = !isFrontCamera;
-      });
-    }
+    final c = controller;
+    if (c == null) return;
+    await c.switchCamera();
+    setState(() {
+      // mobile_scanner's state may not expose cameraFacing directly; track locally
+      isFrontCamera = !isFrontCamera;
+    });
   }
 
   @override
@@ -555,4 +507,3 @@ class _ScannerDialogState extends State<ScannerDialog>
     super.dispose();
   }
 }
-
