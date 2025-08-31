@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:qr_barcode_dialog_scanner/qr_barcode_dialog_scanner.dart';
-import 'package:qr_barcode_dialog_scanner/src/scanner_result.dart';
+import 'scanner_dialog.dart';
+import 'scanner_result.dart';
 
 class QRBarcodeScanner {
   /// يفتح دايلوك مسح QR/Barcode جاهز من المكتبة ويعيد النتيجة عند النجاح.

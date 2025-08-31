@@ -1,8 +1,8 @@
 # qr_barcode_dialog_scanner
 
 
-A modern and elegant Flutter package for QR Code and Barcode scanning with stunning dialog interface and premium user experience.
-version 1.0.0
+A modern and elegant Flutter package for QR Code and Barcode scanning with a dialog interface and smooth UX.
+version 1.1.0
 
 
 ## ✨ Features
@@ -26,7 +26,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  qr_barcode_dialog_scanner: ^1.0.0
+  qr_barcode_dialog_scanner: ^1.1.0
 ```
 
 Then run:
@@ -127,34 +127,23 @@ await QRBarcodeScanner.showScannerDialog(
   
   // Dialog background color
   backgroundColor: Colors.black87,
-  
-  // Custom gradient background
-  backgroundGradient: LinearGradient(
-    colors: [Colors.purple.shade900, Colors.blue.shade900],
-  ),
 );
 ```
 
-### Custom Titles and Messages
+### Custom Titles
 
 ```dart
-await CrystalQRBarcodeDialog.showScannerDialog(
+await QRBarcodeScanner.showScannerDialog(
   context,
   title: 'Custom Scanner',
   subtitle: 'Scan your code here',
-  
-  // Success message
-  successMessage: 'Code scanned successfully!',
-  
-  // Error message for invalid codes
-  errorMessage: 'Invalid code format',
 );
 ```
 
 ### Feature Control
 
 ```dart
-await CrystalQRBarcodeDialog.showScannerDialog(
+await QRBarcodeScanner.showScannerDialog(
   context,
   // Enable/disable flash toggle
   allowFlashToggle: true,
@@ -164,9 +153,6 @@ await CrystalQRBarcodeDialog.showScannerDialog(
   
   // Auto-close dialog after timeout
   timeout: Duration(seconds: 30),
-  
-  // Require specific barcode format
-  allowedFormats: [BarcodeFormat.qrcode, BarcodeFormat.ean13],
 );
 ```
 
@@ -181,7 +167,7 @@ void scanQRForURL() async {
     title: 'Scan QR Code',
     subtitle: 'Point camera at QR code to open link',
     primaryColor: Colors.blue,
-    allowedFormats: [BarcodeFormat.qrcode],
+  // Currently scans all supported formats by mobile_scanner
   );
   
   if (result != null && _isValidURL(result.code)) {
@@ -206,11 +192,7 @@ void scanProductBarcode() async {
     subtitle: 'Scan barcode to view product details',
     primaryColor: Colors.green,
     allowCameraToggle: false,
-    allowedFormats: [
-      BarcodeFormat.ean13,
-      BarcodeFormat.ean8,
-      BarcodeFormat.upca,
-    ],
+  // Scans common product codes (EAN/UPC) automatically
   );
   
   if (result != null) {
@@ -563,7 +545,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- [qr_code_scanner](https://pub.dev/packages/qr_code_scanner) - Core scanning functionality
+- [mobile_scanner](https://pub.dev/packages/mobile_scanner) - Core scanning functionality
 - [permission_handler](https://pub.dev/packages/permission_handler) - Permission management
 - Flutter team for the amazing framework
 

@@ -8,7 +8,7 @@
 // 3) نعرض النتيجة للمستخدم
 // 3) Display the scan result to the user
 
-import 'package:example/src/scanner_widget.dart';
+import 'package:qr_barcode_dialog_scanner/qr_barcode_dialog_scanner.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -42,6 +42,7 @@ class MyHomePage extends StatelessWidget {
             // نطلب سماحية الكاميرا قبل البدء
             // Ask for camera permission first
             final granted = await QRBarcodeScanner.requestCameraPermission();
+            if (!context.mounted) return;
             if (!granted) {
               // إذا الاذن مرفوض نعرض رسالة
               // If permission is denied, show a message
@@ -56,7 +57,7 @@ class MyHomePage extends StatelessWidget {
             final result = await QRBarcodeScanner.showScannerDialog(
               context,
               title: "ماسح الباركود", // عنوان الدايلوك
-              subtitle: 'Scan a code',     // نص توضيحي (اختياري)
+              subtitle: 'Scan a code', // نص توضيحي (اختياري)
               primaryColor: const Color.fromARGB(255, 231, 143, 143),
               backgroundColor: Colors.black87,
               allowFlashToggle: true,
@@ -66,6 +67,7 @@ class MyHomePage extends StatelessWidget {
 
             // إذا أكو نتيجة، نعرضها للمستخدم
             // If we have a result, show it to the user
+            if (!context.mounted) return;
             if (result != null) {
               final msg = 'Code: ${result.code}\nFormat: ${result.format}';
               // نعرض SnackBar بالنتيجة

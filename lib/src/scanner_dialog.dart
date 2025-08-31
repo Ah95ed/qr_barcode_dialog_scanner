@@ -1,3 +1,14 @@
+/// Dialog widget that embeds a live camera preview to scan QR/Barcodes.
+///
+/// عربي (Iraqi): ويدجت دايلوك تتضمن معاينة الكاميرا لمسح رموز QR/باركود. بيها
+/// أزرار تشغيل/إيقاف الفلاش وتبديل الكاميرا ومؤثرات أنيميشن بسيطة. ترجع النتيجة
+/// عبر Navigator.pop([ScannerResult]).
+///
+/// English: A dialog widget with camera preview to scan QR/Barcodes. Includes
+/// torch toggle, camera switch, and subtle animations. Returns the scan result
+/// using Navigator.pop([ScannerResult]).
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'scanner_result.dart';
@@ -196,17 +207,12 @@ class _ScannerDialogState extends State<ScannerDialog>
 
   Widget _buildScannerArea() {
     final height = MediaQuery.sizeOf(context).height;
-
-    final width = MediaQuery.sizeOf(context).width;
     return Container(
       height: height * 0.3,
       margin: const EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: widget.primaryColor.withOpacity(0.5),
-          width: 2,
-        ),
+        border: Border.all(color: widget.primaryColor, width: 2),
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(14),
@@ -250,7 +256,7 @@ class _ScannerDialogState extends State<ScannerDialog>
               borderRadius: BorderRadius.circular(2),
               boxShadow: [
                 BoxShadow(
-                  color: widget.primaryColor.withOpacity(0.6),
+                  color: widget.primaryColor,
                   blurRadius: 8,
                   spreadRadius: 2,
                 ),
@@ -360,20 +366,16 @@ class _ScannerDialogState extends State<ScannerDialog>
       children: [
         Container(
           decoration: BoxDecoration(
-            color: isActive
-                ? widget.primaryColor
-                : Colors.white.withOpacity(0.1),
+            color: isActive ? widget.primaryColor : Colors.white,
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
-              color: isActive
-                  ? widget.primaryColor
-                  : Colors.white.withOpacity(0.2),
+              color: isActive ? widget.primaryColor : Colors.white,
               width: 2,
             ),
             boxShadow: isActive
                 ? [
                     BoxShadow(
-                      color: widget.primaryColor.withOpacity(0.4),
+                      color: widget.primaryColor,
                       blurRadius: 12,
                       spreadRadius: 2,
                     ),
