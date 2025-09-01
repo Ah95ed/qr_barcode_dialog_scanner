@@ -2,7 +2,7 @@
 
 
 A modern and elegant Flutter package for QR Code and Barcode scanning with a dialog interface and smooth UX.
-version 1.1.0
+version 1.1.1
 
 
 ## ✨ Features
