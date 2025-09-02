@@ -26,7 +26,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  qr_barcode_dialog_scanner: ^1.1.0
+  qr_barcode_dialog_scanner: ^1.2.1
 ```
 
 Then run:
@@ -354,7 +354,48 @@ enum BarcodeFormat {
 }
 ```
 
-## 🛠️ Advanced Features
+## � Example: BuildScannerArea (custom scanner area)
+
+Arabic (Iraqi): هذا مثال موجود داخل التطبيق التجريبي يبين شلون تسوي واجهة مسح مخصصة باستخدام MobileScanner. مو جزء من الحزمة نفسها، لكن تگدر تنسخه وتعدله حسب حاجتك. إذا تريد حل جاهز وسريع، استخدم الدالة الجاهزة QRBarcodeScanner.showScannerDialog.
+
+English: This is an example widget in the example app that demonstrates building a custom scanning UI using MobileScanner. It is not exported by the package; copy and adapt it if you need full UI control. For the quickest integration, prefer QRBarcodeScanner.showScannerDialog.
+
+Location: example/lib/src/BuildScannerArea.dart
+
+Parameters
+- title, subtitle: Dialog texts shown above the scan area
+- primaryColor, backgroundColor: Accent and background colors for the visuals
+- allowFlashToggle, allowCameraToggle: Enable/disable flash and camera switch buttons
+- timeout: Optional auto-close duration
+- onResult(String code): Callback invoked with the first detected code value
+
+Quick usage (inside the example app)
+```dart
+Navigator.of(context).push(
+  MaterialPageRoute(
+    builder: (_) => BuildScannerArea(
+      title: 'Barcode Scanner',
+      subtitle: 'Place the code inside the frame',
+      primaryColor: Colors.deepPurple,
+      backgroundColor: Colors.black87,
+      allowFlashToggle: true,
+      allowCameraToggle: true,
+      onResult: (code) {
+        // Handle the result, then close the screen
+        debugPrint('Scanned: $code');
+        Navigator.of(context).pop();
+      },
+    ),
+  ),
+);
+```
+
+Notes
+- Uses MobileScanner directly with a styled overlay and simple animations.
+- Returns only the first detected code via onResult.
+- For most apps, the package dialog API is simpler: QRBarcodeScanner.showScannerDialog(context, ...).
+
+## �🛠️ Advanced Features
 
 ### Custom Scanning Overlay
 

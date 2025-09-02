@@ -1,7 +1,7 @@
 name: qr_barcode_dialog_scanner
 description: " A Flutter package for scanning QR codes and barcodes using a dialog. "
 
-version: 1.1.1
+version: 1.2.1
 repository: https://github.com/Ah95ed/qr_barcode_dialog_scanner
 
 environment:
