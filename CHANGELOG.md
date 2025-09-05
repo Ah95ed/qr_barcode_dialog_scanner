@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-### [1.2.1] - 2025-09-02
+### [1.2.2] - 2025-09-05
 
 Changed
 - Migrate from deprecated qr_code_scanner to maintained mobile_scanner.

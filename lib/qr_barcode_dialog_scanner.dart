@@ -12,5 +12,6 @@ library;
 export 'src/scanner_dialog.dart';
 export 'src/scanner_widget.dart';
 export 'src/scanner_result.dart';
+export 'src/build_scanner.dart';
 
 /// Main exports for the QR & Barcode Scanner dialog package.

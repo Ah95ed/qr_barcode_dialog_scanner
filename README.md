@@ -2,7 +2,7 @@
 
 
 A modern and elegant Flutter package for QR Code and Barcode scanning with a dialog interface and smooth UX.
-version 1.1.1
+version 1.2.2
 
 
 ## ✨ Features
@@ -26,7 +26,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  qr_barcode_dialog_scanner: ^1.2.1
+  qr_barcode_dialog_scanner: ^1.2.2
 ```
 
 Then run:

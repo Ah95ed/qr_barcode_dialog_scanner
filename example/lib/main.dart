@@ -9,11 +9,9 @@
 // 3) Display the scan result to the user
 
 import 'dart:developer';
-
-import 'package:example/src/BuildScannerArea.dart';
-import 'package:example/src/TwoScreen.dart';
 import 'package:qr_barcode_dialog_scanner/qr_barcode_dialog_scanner.dart';
 import 'package:flutter/material.dart';
+import 'package:example/src/build_scanner.dart';
 
 void main() {
   runApp(const MyApp());
